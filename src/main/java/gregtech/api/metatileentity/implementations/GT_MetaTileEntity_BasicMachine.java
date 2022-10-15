@@ -722,7 +722,6 @@ public abstract class GT_MetaTileEntity_BasicMachine extends GT_MetaTileEntity_B
                 doPopUpAllInputSlotOnNextTick = false;
                 popUpSlotOnNextTick.clear();
             }
-            }
 
             if (mOutputBlocked != 0)
                 if (isOutputEmpty()) mOutputBlocked = 0;
