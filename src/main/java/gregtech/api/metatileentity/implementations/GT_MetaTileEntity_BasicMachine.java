@@ -697,7 +697,7 @@ public abstract class GT_MetaTileEntity_BasicMachine extends GT_MetaTileEntity_B
                 // iterate all input slot
                 for (int i = getInputSlot(), j = i + mInputSlotCount; i < j; i++) {
                     if (mInventory[i] == null || (!doPopUpAllInputSlotOnNextTick && !popUpSlotOnNextTick.containsKey(i))) {
-                        continue;;
+                        continue;
                     }
                     TileEntity tTileEntity2 = null;
                     if (popUpSlotOnNextTick.containsKey(i)) {
