@@ -1561,8 +1561,36 @@ public class GT_Utility {
         return 0;
     }
 
+    public static byte moveFromSlotToSide(
+        IInventory fromTile,
+        Object toTile,
+        int aGrabFrom,
+        byte aPutTo,
+        List<ItemStack> aFilter,
+        boolean aInvertFilter,
+        byte aMaxTargetStackSize,
+        byte aMinTargetStackSize,
+        byte aMaxMoveAtOnce,
+        byte aMinMoveAtOnce,
+        boolean aDoCheckChests) {
+            return moveFromSlotToSide(
+                fromTile,
+                toTile,
+                aGrabFrom,
+                aPutTo,
+                aFilter,
+                aInvertFilter,
+                aMaxTargetStackSize,
+                aMinTargetStackSize,
+                aMaxMoveAtOnce,
+                aMinMoveAtOnce,
+                aDoCheckChests,
+                false);
+    }
+
     /**
      * Moves Stack from Inv-Side to Inv-Slot.
+     * @param ignoreSrcCheck if true, we can pull from GT machine input slot
      *
      * @return the Amount of moved Items
      */
@@ -1577,7 +1605,8 @@ public class GT_Utility {
             byte aMinTargetStackSize,
             byte aMaxMoveAtOnce,
             byte aMinMoveAtOnce,
-            boolean aDoCheckChests) {
+            boolean aDoCheckChests,
+            boolean ignoreSrcCheck) {
         if (fromTile == null
                 || aGrabFrom < 0
                 || aMinTargetStackSize <= 0
@@ -1586,7 +1615,7 @@ public class GT_Utility {
                 || aMinMoveAtOnce > aMaxMoveAtOnce) return 0;
 
         if (!listContainsItem(aFilter, fromTile.getStackInSlot(aGrabFrom), true, aInvertFilter)
-                || !isAllowedToTakeFromSlot(fromTile, aGrabFrom, (byte) 6, fromTile.getStackInSlot(aGrabFrom)))
+                || !(ignoreSrcCheck || isAllowedToTakeFromSlot(fromTile, aGrabFrom, (byte) 6, fromTile.getStackInSlot(aGrabFrom))))
             return 0;
 
         if (toTile instanceof IInventory) {

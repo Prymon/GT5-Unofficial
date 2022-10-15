@@ -14,6 +14,7 @@ import gregtech.api.gui.GT_Container_BasicMachine;
 import gregtech.api.gui.GT_GUIContainer_BasicMachine;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IConfigurationCircuitSupport;
+import gregtech.api.interfaces.tileentity.IBasicMachineOcAdaptor;
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
 import gregtech.api.objects.GT_ItemStack;
 import gregtech.api.render.TextureFactory;
@@ -23,7 +24,10 @@ import gregtech.common.power.BasicMachineEUPower;
 import gregtech.common.power.Power;
 import gregtech.common.tileentities.machines.multi.GT_MetaTileEntity_Cleanroom;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,7 +51,7 @@ import net.minecraftforge.fluids.IFluidHandler;
  * Extend this class to make a simple Machine
  */
 public abstract class GT_MetaTileEntity_BasicMachine extends GT_MetaTileEntity_BasicTank
-        implements IConfigurationCircuitSupport {
+        implements IConfigurationCircuitSupport, IBasicMachineOcAdaptor {
 
     /**
      * return values for checkRecipe()
@@ -565,6 +569,18 @@ public abstract class GT_MetaTileEntity_BasicMachine extends GT_MetaTileEntity_B
         for (int i = 0; i < mOutputItems.length; i++) mOutputItems[i] = GT_Utility.loadItem(aNBT, "mOutputItem" + i);
     }
 
+    protected boolean doPopUpAllInputSlotOnNextTick = false;
+    @Override
+    public void popUpAllInputSlot() {
+        doPopUpAllInputSlotOnNextTick = true;
+    }
+
+    protected Map<Integer, Byte> popUpSlotOnNextTick = new HashMap<>();
+    @Override
+    public void popUpSlot(int slot, byte outputSide) {
+        popUpSlotOnNextTick.put(slot,outputSide);
+    }
+
     @Override
     public void onPostTick(IGregTechTileEntity aBaseMetaTileEntity, long aTick) {
         super.onPostTick(aBaseMetaTileEntity, aTick);
@@ -669,6 +685,43 @@ public abstract class GT_MetaTileEntity_BasicMachine extends GT_MetaTileEntity_B
                 // (byte) 1, (byte) 64, (byte) 1);
                 //                    if (tCosts > 0) aBaseMetaTileEntity.decreaseStoredEnergyUnits(tCosts, true);
                 //                }
+            }
+
+            if ((doPopUpAllInputSlotOnNextTick || !popUpSlotOnNextTick.isEmpty())
+                && !isOutputEmpty()
+                && aBaseMetaTileEntity.getFrontFacing() != mMainFacing
+                && (tSucceeded
+                || mOutputBlocked % 300 == 1
+                || aBaseMetaTileEntity.hasInventoryBeenModified()
+                || aTick % 600 == 0)) {
+                // iterate all input slot
+                for (int i = getInputSlot(), j = i + mInputSlotCount; i < j; i++) {
+                    if (mInventory[i] == null || (!doPopUpAllInputSlotOnNextTick && !popUpSlotOnNextTick.containsKey(i))) {
+                        continue;;
+                    }
+                    TileEntity tTileEntity2 = null;
+                    if (popUpSlotOnNextTick.containsKey(i)) {
+                        tTileEntity2 = aBaseMetaTileEntity.getTileEntityAtSide(popUpSlotOnNextTick.get(i));
+                    } else {
+                        tTileEntity2 = aBaseMetaTileEntity.getTileEntityAtSide(aBaseMetaTileEntity.getFrontFacing());
+                    }
+                    GT_Utility.moveFromSlotToSide(
+                        aBaseMetaTileEntity,
+                        tTileEntity2,
+                        i,
+                        aBaseMetaTileEntity.getBackFacing(),
+                        null,
+                        false,
+                        (byte) 64,
+                        (byte) 1,
+                        (byte) 64,
+                        (byte) 1,
+                        true,
+                        true);
+                }
+                doPopUpAllInputSlotOnNextTick = false;
+                popUpSlotOnNextTick.clear();
+            }
             }
 
             if (mOutputBlocked != 0)
