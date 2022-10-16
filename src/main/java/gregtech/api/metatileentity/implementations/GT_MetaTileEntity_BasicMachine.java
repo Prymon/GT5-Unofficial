@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.entity.player.EntityPlayer;
@@ -570,15 +569,17 @@ public abstract class GT_MetaTileEntity_BasicMachine extends GT_MetaTileEntity_B
     }
 
     protected boolean doPopUpAllInputSlotOnNextTick = false;
+
     @Override
     public void popUpAllInputSlot() {
         doPopUpAllInputSlotOnNextTick = true;
     }
 
     protected Map<Integer, Byte> popUpSlotOnNextTick = new HashMap<>();
+
     @Override
     public void popUpSlot(int slot, byte outputSide) {
-        popUpSlotOnNextTick.put(slot,outputSide);
+        popUpSlotOnNextTick.put(slot, outputSide);
     }
 
     @Override
@@ -688,15 +689,16 @@ public abstract class GT_MetaTileEntity_BasicMachine extends GT_MetaTileEntity_B
             }
 
             if ((doPopUpAllInputSlotOnNextTick || !popUpSlotOnNextTick.isEmpty())
-                && !isOutputEmpty()
-                && aBaseMetaTileEntity.getFrontFacing() != mMainFacing
-                && (tSucceeded
-                || mOutputBlocked % 300 == 1
-                || aBaseMetaTileEntity.hasInventoryBeenModified()
-                || aTick % 600 == 0)) {
+                    && !isOutputEmpty()
+                    && aBaseMetaTileEntity.getFrontFacing() != mMainFacing
+                    && (tSucceeded
+                            || mOutputBlocked % 300 == 1
+                            || aBaseMetaTileEntity.hasInventoryBeenModified()
+                            || aTick % 600 == 0)) {
                 // iterate all input slot
                 for (int i = getInputSlot(), j = i + mInputSlotCount; i < j; i++) {
-                    if (mInventory[i] == null || (!doPopUpAllInputSlotOnNextTick && !popUpSlotOnNextTick.containsKey(i))) {
+                    if (mInventory[i] == null
+                            || (!doPopUpAllInputSlotOnNextTick && !popUpSlotOnNextTick.containsKey(i))) {
                         continue;
                     }
                     TileEntity tTileEntity2 = null;
@@ -706,18 +708,18 @@ public abstract class GT_MetaTileEntity_BasicMachine extends GT_MetaTileEntity_B
                         tTileEntity2 = aBaseMetaTileEntity.getTileEntityAtSide(aBaseMetaTileEntity.getFrontFacing());
                     }
                     GT_Utility.moveFromSlotToSide(
-                        aBaseMetaTileEntity,
-                        tTileEntity2,
-                        i,
-                        aBaseMetaTileEntity.getBackFacing(),
-                        null,
-                        false,
-                        (byte) 64,
-                        (byte) 1,
-                        (byte) 64,
-                        (byte) 1,
-                        true,
-                        true);
+                            aBaseMetaTileEntity,
+                            tTileEntity2,
+                            i,
+                            aBaseMetaTileEntity.getBackFacing(),
+                            null,
+                            false,
+                            (byte) 64,
+                            (byte) 1,
+                            (byte) 64,
+                            (byte) 1,
+                            true,
+                            true);
                 }
                 doPopUpAllInputSlotOnNextTick = false;
                 popUpSlotOnNextTick.clear();

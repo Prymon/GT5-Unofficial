@@ -1562,18 +1562,18 @@ public class GT_Utility {
     }
 
     public static byte moveFromSlotToSide(
-        IInventory fromTile,
-        Object toTile,
-        int aGrabFrom,
-        byte aPutTo,
-        List<ItemStack> aFilter,
-        boolean aInvertFilter,
-        byte aMaxTargetStackSize,
-        byte aMinTargetStackSize,
-        byte aMaxMoveAtOnce,
-        byte aMinMoveAtOnce,
-        boolean aDoCheckChests) {
-            return moveFromSlotToSide(
+            IInventory fromTile,
+            Object toTile,
+            int aGrabFrom,
+            byte aPutTo,
+            List<ItemStack> aFilter,
+            boolean aInvertFilter,
+            byte aMaxTargetStackSize,
+            byte aMinTargetStackSize,
+            byte aMaxMoveAtOnce,
+            byte aMinMoveAtOnce,
+            boolean aDoCheckChests) {
+        return moveFromSlotToSide(
                 fromTile,
                 toTile,
                 aGrabFrom,
@@ -1615,7 +1615,8 @@ public class GT_Utility {
                 || aMinMoveAtOnce > aMaxMoveAtOnce) return 0;
 
         if (!listContainsItem(aFilter, fromTile.getStackInSlot(aGrabFrom), true, aInvertFilter)
-                || !(ignoreSrcCheck || isAllowedToTakeFromSlot(fromTile, aGrabFrom, (byte) 6, fromTile.getStackInSlot(aGrabFrom))))
+                || !(ignoreSrcCheck
+                        || isAllowedToTakeFromSlot(fromTile, aGrabFrom, (byte) 6, fromTile.getStackInSlot(aGrabFrom))))
             return 0;
 
         if (toTile instanceof IInventory) {
