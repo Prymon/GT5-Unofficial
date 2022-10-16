@@ -30,10 +30,7 @@ import gregtech.api.graphs.GenerateNodeMapPower;
 import gregtech.api.graphs.Node;
 import gregtech.api.interfaces.ITexture;
 import gregtech.api.interfaces.metatileentity.IMetaTileEntity;
-import gregtech.api.interfaces.tileentity.IDebugableTileEntity;
-import gregtech.api.interfaces.tileentity.IEnergyConnected;
-import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import gregtech.api.interfaces.tileentity.IGregtechWailaProvider;
+import gregtech.api.interfaces.tileentity.*;
 import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_BasicMachine;
 import gregtech.api.metatileentity.implementations.GT_MetaTileEntity_Hatch;
 import gregtech.api.net.GT_Packet_TileEntity;
@@ -90,7 +87,8 @@ public class BaseMetaTileEntity extends CommonMetaTileEntity
                 IAlignmentProvider,
                 IConstructableProvider,
                 IDebugableTileEntity,
-                IGregtechWailaProvider {
+                IGregtechWailaProvider,
+                IBasicMachineOcAdaptor {
     private static final Field ENTITY_ITEM_HEALTH_FIELD =
             ReflectionHelper.findField(EntityItem.class, "health", "field_70291_e");
     private final boolean[] mActiveEUInputs = new boolean[] {false, false, false, false, false, false};
@@ -2445,5 +2443,19 @@ public class BaseMetaTileEntity extends CommonMetaTileEntity
     @Override
     public IConstructable getConstructable() {
         return getMetaTileEntity() instanceof IConstructable ? (IConstructable) getMetaTileEntity() : null;
+    }
+
+    @Override
+    public void popUpAllInputSlot() {
+        if (mMetaTileEntity instanceof IBasicMachineOcAdaptor) {
+            ((IBasicMachineOcAdaptor) mMetaTileEntity).popUpAllInputSlot();
+        }
+    }
+
+    @Override
+    public void popUpSlot(int slot, byte outputSide) {
+        if (mMetaTileEntity instanceof IBasicMachineOcAdaptor) {
+            ((IBasicMachineOcAdaptor) mMetaTileEntity).popUpSlot(slot, outputSide);
+        }
     }
 }

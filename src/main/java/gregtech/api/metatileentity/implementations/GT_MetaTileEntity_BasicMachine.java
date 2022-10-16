@@ -688,13 +688,7 @@ public abstract class GT_MetaTileEntity_BasicMachine extends GT_MetaTileEntity_B
                 //                }
             }
 
-            if ((doPopUpAllInputSlotOnNextTick || !popUpSlotOnNextTick.isEmpty())
-                    && !isOutputEmpty()
-                    && aBaseMetaTileEntity.getFrontFacing() != mMainFacing
-                    && (tSucceeded
-                            || mOutputBlocked % 300 == 1
-                            || aBaseMetaTileEntity.hasInventoryBeenModified()
-                            || aTick % 600 == 0)) {
+            if ((doPopUpAllInputSlotOnNextTick || !popUpSlotOnNextTick.isEmpty())) {
                 // iterate all input slot
                 for (int i = getInputSlot(), j = i + mInputSlotCount; i < j; i++) {
                     if (mInventory[i] == null
